@@ -43,6 +43,59 @@ public class TestShell {
         }
     }
 
+    public static boolean fullReadToFileScript(String filePath) {
+        File file = new File(filePath);
+        List<String> lines2 = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if(!line.equals("0xABCDFFF")) {
+
+                    return false;
+                }
+            }
+
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to " + filePath + ": " + e.getMessage());
+        }
+
+        return true;
+
+    }
+
+    public static void testApp1(String filePath) {
+        File file = new File(filePath);
+        List<String> lines = new ArrayList<>();
+
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);  // 파일의 각 줄을 출력
+            }
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to " + filePath + ": " + e.getMessage());
+        }
+
+        fullWriteToFile("src/main/java/nand.txt", "0xABCDFFF");
+        System.out.println(fullReadToFileScript("src/main/java/nand.txt"));
+
+
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (String l : lines) {
+                writer.write(l);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -97,11 +150,78 @@ public class TestShell {
                     executeSSDCommand("R", block, null);
                 }
                 else if (command.equalsIgnoreCase("fullwrite")) {
-                    fullWriteToFile("C:\\oeunsol_java\\untitled5\\src\\main\\java\\nand.txt", parts[1]);
+                    fullWriteToFile("src/main/java/nand.txt", parts[1]);
                     break;
                 }
                 else if (command.equalsIgnoreCase("fullread")) {
-                    fullReadToFile("C:\\oeunsol_java\\untitled5\\src\\main\\java\\nand.txt");
+                    fullReadToFile("src/main/java/nand.txt");
+                    break;
+                }
+
+                else if (command.equalsIgnoreCase("testapp1")) {
+
+                    testApp1("src/main/java/nand.txt");
+                    break;
+                }
+
+                else if (command.equalsIgnoreCase("testapp2")) {
+                    File file = new File("src/main/java/nand.txt");
+                    List<String> lines = new ArrayList<>();
+
+
+                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            lines.add(line);  // 파일의 각 줄을 출력
+                        }
+
+                    } catch (IOException e) {
+                        System.out.println("error");
+                    }
+
+                    String data = "0xAAAAAAAA";
+
+                    // SSD 프로그램의 write 명령어 실행
+                    for (int w =0; w<30; w++) {
+                        for(int i=0; i<5; i++) {
+                            executeSSDCommand("W", i, data);
+                        }
+                    }
+
+                    data = "0xBBBBBBBB";
+
+                    for(int i=0; i<5; i++) {
+                        executeSSDCommand("W", i, data);
+                    }
+
+                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                        String line;
+                        int i=0;
+                        while ((line = reader.readLine()) != null && i<5) {
+                            if(!line.equals("0xBBBBBBBB")) {
+                                System.out.println("false");
+                            }
+                            i++;
+                        }
+
+                        System.out.println("true");
+
+
+                    } catch (IOException e) {
+                        System.out.println("error");
+                    }
+
+
+
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                        for (String l : lines) {
+                            writer.write(l);
+                            writer.newLine();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     break;
                 }
 
