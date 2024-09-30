@@ -25,7 +25,7 @@ nand.txt 파일을 읽으면서 지정된 블록을 찾으면 그 데이터를 r
 사용자가 SHELL > 프롬프트에서 명령을 입력하면 이를 처리하고 결과를 출력합니다.   
 지원되는 명령어는 write, read, fullwrite, fullread, help, 그리고 exit입니다.
 
-##### 2. 주요 명령어   
+###### 주요 명령어   
 - write <address> <data>: write 명령어는 지정된 주소에 데이터 값을 쓰는 기능을 제공합니다. executeSSDCommand 메서드를 호출하여 SSD 프로그램을 통해 해당 블록에 데이터를 쓰게 됩니다.   
 - read <address>: read 명령어는 지정된 주소의 데이터를 읽는 기능입니다. 역시 executeSSDCommand 메서드를 호출하여 SSD 프로그램을 통해 해당 데이터를 읽습니다.   
 - fullwrite <data>: fullwrite 명령어는 nand.txt 파일의 모든 라인을 입력된 데이터 값으로 업데이트합니다. 이를 위해 fullWriteToFile 메서드를 호출합니다.   
@@ -33,15 +33,15 @@ nand.txt 파일을 읽으면서 지정된 블록을 찾으면 그 데이터를 r
 - help: help 명령어는 사용 가능한 모든 명령어를 화면에 출력합니다.  
 - exit: exit 명령어는 프로그램을 종료합니다.
 
-##### 3. executeSSDCommand 메서드    
+##### 2. executeSSDCommand 메서드    
 이 메서드는 ProcessBuilder를 사용하여 SSD 프로그램을 실행하는 역할을 합니다.   
 write 명령의 경우 java SSD W <block> <data> 형식으로 실행하고, read 명령의 경우 java SSD R <block> 형식으로 실행하여 다른 프로세스로 SSD 프로그램을 호출합니다.   
 process.waitFor()를 사용하여 SSD 프로그램의 실행이 완료될 때까지 대기하며, 그 결과를 쉘에 출력합니다.    
   
-##### 4. fullWriteToFile 메서드     
+##### 3. fullWriteToFile 메서드     
 fullWriteToFile 메서드는 nand.txt 파일의 모든 줄을 지정된 데이터 값으로 업데이트하는 기능을 수행합니다.   
 파일을 읽어 기존 내용을 지우고 새로운 데이터로 덮어씁니다.
  
-##### 5. fullReadToFile 메서드    
+##### 4. fullReadToFile 메서드    
 fullReadToFile 메서드는 nand.txt 파일의 모든 내용을 읽어서 콘솔에 출력하는 기능을 담당합니다.   
 BufferedReader를 사용하여 파일의 각 줄을 읽고 화면에 출력합니다.   
