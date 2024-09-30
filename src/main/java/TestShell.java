@@ -1,7 +1,49 @@
 import java.io.File;
 import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class TestShell {
+    public static void fullWriteToFile(String filePath, String data) {
+        File file = new File(filePath);
+        List<String> lines = new ArrayList<>();
+
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(data);
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                for (String l : lines) {
+                    writer.write(l);
+                    writer.newLine();
+                }
+            }
+
+            System.out.println("All lines in " + filePath + " are updated with: " + data);
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to " + filePath + ": " + e.getMessage());
+        }
+    }
+
+    public static void fullReadToFile(String filePath) {
+        File file = new File(filePath);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);  // 파일의 각 줄을 출력
+            }
+
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to " + filePath + ": " + e.getMessage());
+        }
+    }
+
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String str;
@@ -53,8 +95,17 @@ public class TestShell {
 
                     // SSD 프로그램의 read 명령어 실행
                     executeSSDCommand("R", block, null);
+                }
+                else if (command.equalsIgnoreCase("fullwrite")) {
+                    fullWriteToFile("C:\\oeunsol_java\\untitled5\\src\\main\\java\\nand.txt", parts[1]);
+                    break;
+                }
+                else if (command.equalsIgnoreCase("fullread")) {
+                    fullReadToFile("C:\\oeunsol_java\\untitled5\\src\\main\\java\\nand.txt");
+                    break;
+                }
 
-                } else {
+                else {
                     System.out.println("Unknown command. Type 'help' for a list of commands.");
                 }
             } catch (NumberFormatException e) {
@@ -92,3 +143,8 @@ public class TestShell {
         }
     }
 }
+
+
+
+
+
