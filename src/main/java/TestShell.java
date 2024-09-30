@@ -2,12 +2,21 @@ import java.io.File;
 import java.util.Scanner;
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestShell {
     public static void fullWriteToFile(String filePath, String data) {
         File file = new File(filePath);
         List<String> lines = new ArrayList<>();
 
+        String regex = "0x[0-9A-F]{8}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(data);
+        if (!matcher.matches()) {
+            System.out.println("[ERROR] Invalid data: Data must be 4 bytes");
+            return;
+        }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
@@ -50,7 +59,7 @@ public class TestShell {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if(!line.equals("0xABCDFFF")) {
+                if(!line.equals("0xABCDFFFF")) {
 
                     return false;
                 }
@@ -80,8 +89,8 @@ public class TestShell {
             System.out.println("An error occurred while writing to " + filePath + ": " + e.getMessage());
         }
 
-        fullWriteToFile("src/main/java/nand.txt", "0xABCDFFF");
-        System.out.println(fullReadToFileScript("src/main/java/nand.txt"));
+        fullWriteToFile("nand.txt", "0xABCDFFFF");
+        System.out.println(fullReadToFileScript("nand.txt"));
 
 
 
@@ -150,22 +159,22 @@ public class TestShell {
                     executeSSDCommand("R", address, null);
                 }
                 else if (command.equalsIgnoreCase("fullwrite")) {
-                    fullWriteToFile("src/main/java/nand.txt", parts[1]);
-                    break;
+                    fullWriteToFile("nand.txt", parts[1]);
+                    continue;
                 }
                 else if (command.equalsIgnoreCase("fullread")) {
-                    fullReadToFile("src/main/java/nand.txt");
-                    break;
+                    fullReadToFile("nand.txt");
+                    continue;
                 }
 
                 else if (command.equalsIgnoreCase("testapp1")) {
 
-                    testApp1("src/main/java/nand.txt");
-                    break;
+                    testApp1("nand.txt");
+                    continue;
                 }
 
                 else if (command.equalsIgnoreCase("testapp2")) {
-                    File file = new File("src/main/java/nand.txt");
+                    File file = new File("nand.txt");
                     List<String> lines = new ArrayList<>();
 
 
@@ -183,14 +192,15 @@ public class TestShell {
 
                     // SSD 프로그램의 write 명령어 실행
                     for (int w =0; w<30; w++) {
-                        for(int i=0; i<5; i++) {
+                        System.out.println(w + " LBA in testing...");
+                        for(int i=0; i<=5; i++) {
                             executeSSDCommand("W", i, data);
                         }
                     }
 
                     data = "0xBBBBBBBB";
 
-                    for(int i=0; i<5; i++) {
+                    for(int i=0; i<=5; i++) {
                         executeSSDCommand("W", i, data);
                     }
 
@@ -222,7 +232,7 @@ public class TestShell {
                         throw new RuntimeException(e);
                     }
 
-                    break;
+                    continue;
                 }
 
                 else {
