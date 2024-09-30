@@ -114,8 +114,8 @@ public class TestShell {
             // help 명령어 처리
             if (str.equalsIgnoreCase("help")) {
                 System.out.println("Available commands:");
-                System.out.println("write <block> <data> - Writes data to a specific block");
-                System.out.println("read <block> - Reads data from a specific block");
+                System.out.println("write <address> <data> - Writes data to a specific address");
+                System.out.println("read <address> - Reads data from a specific address");
                 System.out.println("exit - Exit the shell");
                 System.out.println("help - Show available commands");
                 continue;
@@ -130,24 +130,24 @@ public class TestShell {
             try {
                 if (command.equalsIgnoreCase("write")) {
                     if (parts.length != 3) {
-                        System.out.println("Usage: write <block> <data>");
+                        System.out.println("Usage: write <address> <data>");
                         continue;
                     }
-                    int block = Integer.parseInt(parts[1]);
+                    int address = Integer.parseInt(parts[1]);
                     String data = parts[2];
 
                     // SSD 프로그램의 write 명령어 실행
-                    executeSSDCommand("W", block, data);
+                    executeSSDCommand("W", address, data);
 
                 } else if (command.equalsIgnoreCase("read")) {
                     if (parts.length != 2) {
-                        System.out.println("Usage: read <block>");
+                        System.out.println("Usage: read <address>");
                         continue;
                     }
-                    int block = Integer.parseInt(parts[1]);
+                    int address = Integer.parseInt(parts[1]);
 
                     // SSD 프로그램의 read 명령어 실행
-                    executeSSDCommand("R", block, null);
+                    executeSSDCommand("R", address, null);
                 }
                 else if (command.equalsIgnoreCase("fullwrite")) {
                     fullWriteToFile("src/main/java/nand.txt", parts[1]);
@@ -226,23 +226,23 @@ public class TestShell {
                 }
 
                 else {
-                    System.out.println("Unknown command. Type 'help' for a list of commands.");
+                    System.out.println("INVALID COMMAND");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid block number format.");
+                System.out.println("Invalid address number format.");
             }
         }
     }
 
     // SSD 프로그램 실행 메서드
-    private static void executeSSDCommand(String mode, int block, String data) {
+    private static void executeSSDCommand(String mode, int address, String data) {
         try {
             ProcessBuilder builder;
 
             if ("W".equals(mode)) {
-                builder = new ProcessBuilder("java", "SSD", mode, String.valueOf(block), data);
+                builder = new ProcessBuilder("java", "SSD", mode, String.valueOf(address), data);
             } else {
-                builder = new ProcessBuilder("java", "SSD", mode, String.valueOf(block));
+                builder = new ProcessBuilder("java", "SSD", mode, String.valueOf(address));
             }
 
             // 현재 작업 디렉토리를 명시적으로 설정 (SSD.class 파일이 있는 위치)
@@ -255,6 +255,12 @@ public class TestShell {
                 while (processOutput.hasNextLine()) {
                     System.out.println(processOutput.nextLine());
                 }
+            }
+
+            if ("R".equals(mode)){
+                BufferedReader reader = new BufferedReader(new FileReader(new File("result.txt")));
+                String line = reader.readLine();
+                System.out.println("Result.txt " + address + ": " + line); // 화면에 출력
             }
 
             process.waitFor();
