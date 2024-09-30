@@ -1,39 +1,53 @@
 import java.io.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 
 public class SSD {
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.println("Usage:");
-            System.out.println("For writing: java SSD W <block> <data>");
-            System.out.println("For reading: java SSD R <block>");
+            System.out.println("Writing Format: java SSD.java W <block> <data>");
+            System.out.println("Reading Format: java SSD.java R <block>");
             return;
         }
-
+        
         String mode = args[0];
         int block;
 
         try {
             block = Integer.parseInt(args[1]);
             if (block < 0 || block > 99) {
-                System.out.println("Block number must be between 0 and 99.");
+                System.out.println("[ERROR] Block number must be between 0 and 99.");
                 return;
             }
         } catch (NumberFormatException e) {
-            System.out.println("Invalid block number.");
+            System.out.println("[ERROR] Invalid block number.");
             return;
         }
 
-        if (mode.equalsIgnoreCase("R")) {
-            readFromFile(block);
-        } else if (mode.equalsIgnoreCase("W")) {
-            if (args.length != 3) {
-                System.out.println("Invalid arguments for write operation.");
+        if (mode.equals("R")) {
+            if (args.length != 2) {
+                System.out.println("[ERROR] Invalid arguments for read operation.");
                 return;
             }
+            readFromFile(block);
+        } else if (mode.equals("W")) {
+            if (args.length != 3) {
+                System.out.println("[ERROR] Invalid arguments for write operation..");
+                return;
+            }
+            String regex = "0x[0-9A-F]{8}";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(args[2]);
+            if (!matcher.matches()) {
+                System.out.println("[ERROR] Invalid data: Data must be 4 bytes");
+                return;
+            }
+
             String data = args[2];
             writeToFile(block, data);
         } else {
-            System.out.println("Invalid mode. Use 'W' for write or 'R' for read.");
+            System.out.println("Invalid operation. Use 'W' for write or 'R' for read.");
         }
     }
 
@@ -62,7 +76,7 @@ public class SSD {
             writer.write(content.toString());
             writer.close();
 
-            System.out.println("Data written to nand.txt at line " + block);
+            System.out.println("Data written at line " + block);
 
         } catch (IOException e) {
             System.out.println("An error occurred while writing to nand.txt: " + e.getMessage());
