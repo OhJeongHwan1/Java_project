@@ -137,6 +137,12 @@ public class TestShell {
                 }
             }
 
+            if ("R".equals(mode)){
+                BufferedReader reader = new BufferedReader(new FileReader(new File("result.txt")));
+                String line = reader.readLine();
+                System.out.println("Result.txt " + address + ": " + line); // 화면에 출력
+            }
+
             process.waitFor();
         } catch (Exception e) {
             System.out.println("Error executing SSD command: " + e.getMessage());

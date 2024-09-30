@@ -95,7 +95,7 @@ public class SSD {
 
             while ((line = reader.readLine()) != null) {
                 if (currentLine == address) {
-                    System.out.println("Result.txt " + address + ": " + line); // 화면에 출력
+                    //System.out.println("Result.txt " + address + ": " + line); // 화면에 출력
                     resultWriter.write(line); // result.txt에 값 추가
                     resultWriter.newLine();
                     found = true;
