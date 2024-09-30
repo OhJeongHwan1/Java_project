@@ -42,6 +42,6 @@ process.waitFor()를 사용하여 SSD 프로그램의 실행이 완료될 때까
 fullWriteToFile 메서드는 nand.txt 파일의 모든 줄을 지정된 데이터 값으로 업데이트하는 기능을 수행합니다.   
 파일을 읽어 기존 내용을 지우고 새로운 데이터로 덮어씁니다.
  
-#### 5. fullReadToFile 메서드    
+##### 5. fullReadToFile 메서드    
 fullReadToFile 메서드는 nand.txt 파일의 모든 내용을 읽어서 콘솔에 출력하는 기능을 담당합니다.   
 BufferedReader를 사용하여 파일의 각 줄을 읽고 화면에 출력합니다.   
